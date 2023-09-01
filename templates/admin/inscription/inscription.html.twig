@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+
+    <div class=" ">
+    {{ form_start(form) }}
+        <div class="card  bg-green-500 shadow-xl   h-screen  ">
+            <div class="card-body flex flex-col items-center">
+                <div class="">
+                    <div>
+                        {{ form_row(form.name, {
+                            attr: {
+                                class: 'input w-full max-w-xs input-accent  ',
+                            }
+                        }) }}
+                    </div>
+                    <div>
+                        {{ form_row(form.firstname, {
+                            attr: {
+                                class: 'input w-full  max-w-xs input-accent ',
+                            }
+                        }) }}
+                    </div>
+                    <div>
+
+                        {{ form_row(form.email, {
+                            attr: {
+                                class: 'input w-full max-w-xs input-accent ',
+                            }
+                        }) }}
+                    </div>
+                    <div >
+                        {{ form_row(form.password, {
+                            attr: {
+                                class: 'input w-full max-w-xs input-accent  ',
+                            }
+                        }) }}
+                    </div>
+                    <button type="submit" class="btn ">S'inscrire</button>
+
+                </div>
+            </div>
+        </div>
+
+    {{ form_end(form) }}
+    </div>
+
+{% endblock %}

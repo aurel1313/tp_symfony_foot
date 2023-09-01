@@ -1,0 +1,15 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello inscriptionController!{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+
+
+{% endblock %}
+{% block body %}
+    {{ parent() }}
+    <div class="flex flex-col items-center" >
+        <a href="{{  path('app_admin_inscription')}}" class="btn btn-primary">Ajouter</a>
+    </div>
+{% endblock %}

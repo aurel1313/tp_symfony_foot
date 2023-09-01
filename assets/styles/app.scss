@@ -1,0 +1,11 @@
+@import 'daisyui/dist/full.css';
+
+
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+body{
+   & .nav{
+     background-color:#5EC255;
+   }
+}
