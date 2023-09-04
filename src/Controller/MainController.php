@@ -2,11 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\ArticlesFoot;
+use App\Form\ArticleFootType;
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Serializer;
@@ -45,5 +49,21 @@ class MainController extends AbstractController
 
 
         return $data;
+    }
+    #[Route('/articles','article_foot')]
+    public function CommunityList(entityManagerInterface $entityManager, Request $request,int $idArticle=null): Response{
+        if($idArticle==null){
+            $article = new ArticlesFoot();
+        }
+        $form =$this->createForm(ArticleFootType::class,$article);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+            $entityManager->persist($article);
+            $entityManager->flush();
+            $this->redirectToRoute('article_foot');
+        }
+        return $this->render('main/articles/list_article.html.twig',[
+            'form'=>$form
+        ]);
     }
 }
