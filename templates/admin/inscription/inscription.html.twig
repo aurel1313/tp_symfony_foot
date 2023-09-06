@@ -8,19 +8,27 @@
             <div class="card-body flex flex-col items-center">
                 <div class="">
                     <div>
-                        {{ form_row(form.name, {
-                            attr: {
-                                class: 'input w-full max-w-xs input-accent  ',
-                            }
-                        }) }}
-                    </div>
-                    <div>
-                        {{ form_row(form.firstname, {
-                            attr: {
-                                class: 'input w-full  max-w-xs input-accent ',
-                            }
-                        }) }}
-                    </div>
+                        <div>
+                            {{ form_row(form.name, {
+                                attr: {
+                                    class: 'input w-full max-w-xs input-accent ',
+                                }
+                            }) }}
+                        </div>
+                        <div>
+                            {{ form_row(form.firstname, {
+                                attr: {
+                                    class: 'input w-full max-w-xs input-accent ',
+                                }
+                            }) }}
+                        </div>
+                        <div>
+                            {{ form_row(form.pseudo, {
+                                attr: {
+                                    class: 'input w-full max-w-xs input-accent ',
+                                }
+                            }) }}
+                        </div>
                     <div>
 
                         {{ form_row(form.email, {

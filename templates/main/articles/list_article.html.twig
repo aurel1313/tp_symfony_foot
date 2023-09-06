@@ -2,7 +2,8 @@
 
 {% block listArticle %}
     <div >
-        <h1 class="text-center">Ajouter un article</h1>
+        {{ dump(app.request.get('_route')) }}
+        <h1 class="text-center"> {{ app.request.get('_route') == "modifier_article" ? "Modifier" : "Ajouter" }}</h1>
         {{ form_start(form) }}
         <div class="flex flex-col items-center h-screen justify-center ">
             <div class="">

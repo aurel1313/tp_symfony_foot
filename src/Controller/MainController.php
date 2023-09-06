@@ -50,17 +50,24 @@ class MainController extends AbstractController
 
         return $data;
     }
+    #[Route('/articles_List','article_foot_index')]
+    public function IndexArticle():Response{
+        return $this->render('index.html.twig');
+    }
     #[Route('/articles','article_foot')]
+    #[Route('/article/modifier/{id}','modifier_article')]
     public function CommunityList(entityManagerInterface $entityManager, Request $request,int $idArticle=null): Response{
         if($idArticle==null){
             $article = new ArticlesFoot();
+        }else{
+            $entityManager->find($idArticle);
         }
         $form =$this->createForm(ArticleFootType::class,$article);
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
             $entityManager->persist($article);
             $entityManager->flush();
-            $this->redirectToRoute('article_foot');
+            $this->redirectToRoute('article_foot_index');
         }
         return $this->render('main/articles/list_article.html.twig',[
             'form'=>$form
