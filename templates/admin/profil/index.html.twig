@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ProfilController!{% endblock %}
+
+{% block body %}
+    <div class="flex justify-center h-screen items-center ">
+        <div class="card w-96 bg-base-100 shadow-xl ">
+            <div class="card-body">
+                <p class="text-center font-bold">Profil:{{ app.user.pseudo }}</p>
+            </div>
+
+        </div>
+    </div>
+
+
+{% endblock %}

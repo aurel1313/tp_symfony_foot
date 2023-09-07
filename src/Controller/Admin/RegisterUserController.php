@@ -4,27 +4,46 @@ namespace App\Controller\Admin;
 
 use App\Entity\User;
 use App\Form\InscriptionType;
-use Cassandra\Type\UserType;
+
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use App\Security\EmailVerifier;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class RegisterUserController extends AbstractController
 {
+
     #[Route('/admin/inscription', name: 'app_admin_inscription')]
-    public function index(Request $request,UserPasswordEncoderInterface $passwordEncoder): Response
+    public function index(Request $request, entityManagerInterface $entityManager,UserPasswordHasherInterface $userPasswordHasher): Response
     {
         $user = new User();
         $form =$this->createForm(InscriptionType::class,$user);
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
-             $password = $passwordEncoder->encodePassword($user, $user->getPassword());
-            //return $this->redirectToRoute('app_main');
+             $user->setPassword($userPasswordHasher->hashPassword(
+                 $user,
+                 $form->get('password')->getData()
+             ));
+            $userRepository= $entityManager->getRepository(User::class);
+            $userOne = $userRepository->findAll();
+            if(!$userOne){
+                $user->setRoles(['ROLE_ADMIN']);
+            }else{
+                $user->setRoles(['ROLE_USER']);
+            }
+            $entityManager->persist($user);
+            $entityManager->flush();
+            return $this->redirectToRoute('app_login');
         }
         return $this->render('admin/inscription/inscription.html.twig', [
-            'form'=>$form
+            'form'=>$form,
         ]);
     }
+
+
 }

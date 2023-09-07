@@ -55,7 +55,12 @@
                                 </ul>
                             </details>
                         </li>
+                        {% if app.user is null %}
                         <li><a href="{{ path("app_admin_inscription") }}">Inscription</a></li>
+                            {% else %}
+                            <li><a href="{{ path("app_admin_profil") }}">{{ app.user.email }}</a></li>
+                                <li><a href="">Deconnexion</a></li>
+                        {% endif %}
 
                     </ul>
                 </div>
