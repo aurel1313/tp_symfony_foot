@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20230903142937 extends AbstractMigration
+final class Version20230907155456 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,12 +20,14 @@ final class Version20230903142937 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE TABLE articles_foot (id INT AUTO_INCREMENT NOT NULL, nom VARCHAR(80) NOT NULL, description VARCHAR(255) NOT NULL, images VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('ALTER TABLE user ADD roles JSON NOT NULL, CHANGE firstname firstname VARCHAR(80) NOT NULL, CHANGE email email VARCHAR(180) NOT NULL');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D649E7927C74 ON user (email)');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('DROP TABLE articles_foot');
+        $this->addSql('DROP INDEX UNIQ_8D93D649E7927C74 ON user');
+        $this->addSql('ALTER TABLE user DROP roles, CHANGE email email VARCHAR(255) NOT NULL, CHANGE firstname firstname VARCHAR(50) NOT NULL');
     }
 }
