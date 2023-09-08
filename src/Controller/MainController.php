@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\ArticlesFoot;
 use App\Form\ArticleFootType;
+use App\Repository\ArticlesFootRepository;
+use App\Services\FileUploader;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client;
@@ -50,13 +52,17 @@ class MainController extends AbstractController
 
         return $data;
     }
-    #[Route('/articles_List','article_foot_index')]
-    public function IndexArticle():Response{
-        return $this->render('index.html.twig');
+    #[Route('/list','article_foot_list')]
+    public function IndexArticle(entityManagerInterface $manager,ArticlesFootRepository $articlesFootRepository):Response{
+       $articles = $articlesFootRepository->findAll();
+
+        return $this->render('main/articles/list_article.html.twig',[
+            'article'=>$articles
+        ]);
     }
     #[Route('/articles','article_foot')]
     #[Route('/article/modifier/{id}','modifier_article')]
-    public function CommunityList(entityManagerInterface $entityManager, Request $request,int $idArticle=null): Response{
+    public function CommunityList(entityManagerInterface $entityManager, Request $request,int $idArticle=null,FileUploader $fileUploader): Response{
         if($idArticle==null){
             $article = new ArticlesFoot();
         }else{
@@ -65,11 +71,16 @@ class MainController extends AbstractController
         $form =$this->createForm(ArticleFootType::class,$article);
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
+            $img =$form->get('images')->getData();
+            if($img){
+                $imgName = $fileUploader->upload($img);
+                $article->setImages($imgName);
+            }
             $entityManager->persist($article);
             $entityManager->flush();
             $this->redirectToRoute('article_foot_index');
         }
-        return $this->render('main/articles/list_article.html.twig',[
+        return $this->render('main/articles/add_modify_article.html.twig',[
             'form'=>$form
         ]);
     }

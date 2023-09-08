@@ -3,9 +3,13 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\PasswordStrength;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -24,7 +28,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      */
+
     #[ORM\Column]
+    #[Assert\Length(
+        min:6 ,
+
+        minMessage: 'Vous devez avoir au moins 6 caracteres',
+
+    )]
+    #[Assert\Regex(
+        pattern: '/[A-Z]/',message: "Doit contenir une majuscule"
+
+    )]
     private ?string $password = null;
 
     #[ORM\Column(length: 50)]
@@ -35,6 +50,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255)]
     private ?string $pseudo = null;
+
+    #[ORM\OneToMany(mappedBy: 'idUser', targetEntity: ArticlesFoot::class)]
+    private Collection $idArticleFoot;
+
+
+
+    public function __construct()
+    {
+        $this->idArticleFoot = new ArrayCollection();
+
+    }
 
     public function getId(): ?int
     {
@@ -141,4 +167,41 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, ArticlesFoot>
+     */
+    public function getIdArticleFoot(): Collection
+    {
+        return $this->idArticleFoot;
+    }
+
+    public function addIdArticleFoot(ArticlesFoot $idArticleFoot): static
+    {
+        if (!$this->idArticleFoot->contains($idArticleFoot)) {
+            $this->idArticleFoot->add($idArticleFoot);
+            $idArticleFoot->setIdUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIdArticleFoot(ArticlesFoot $idArticleFoot): static
+    {
+        if ($this->idArticleFoot->removeElement($idArticleFoot)) {
+            // set the owning side to null (unless already changed)
+            if ($idArticleFoot->getIdUser() === $this) {
+                $idArticleFoot->setIdUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+
+
+
+
+
 }

@@ -19,8 +19,14 @@ class ArticlesFoot
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255,nullable: true)]
     private ?string $images = null;
+
+    #[ORM\ManyToOne(inversedBy: 'idArticleFoot')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $idUser = null;
+
+
 
     public function getId(): ?int
     {
@@ -59,6 +65,30 @@ class ArticlesFoot
     public function setImages(string $images): static
     {
         $this->images = $images;
+
+        return $this;
+    }
+
+    public function getIdUser(): ?User
+    {
+        return $this->idUser;
+    }
+
+    public function setIdUser(?User $idUser): static
+    {
+        $this->idUser = $idUser;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

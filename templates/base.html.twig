@@ -46,19 +46,21 @@
                                 </ul>
                             </details>
 
-                        <li tabindex="0">
-                            <details>
-                                <summary>Communauté</summary>
-                                <ul class="p-2">
-                                    <li><a href="{{ path('article_foot') }}">AJouter un article</a></li>
-                                    <li><a href="{{ path('article_foot') }}">Lister les articles</a></li>
-                                </ul>
-                            </details>
-                        </li>
+
                         {% if app.user is null %}
                         <li><a href="{{ path("app_admin_inscription") }}">Inscription</a></li>
+                            <li><a href="{{ path("app_login") }}">Connexion</a></li>
                             {% else %}
                             <li><a href="{{ path("app_admin_profil") }}">{{ app.user.email }}</a></li>
+                                <li tabindex="0">
+                                    <details>
+                                        <summary>Communauté</summary>
+                                        <ul class="p-2" style="z-index: 100">
+                                            <li><a href="{{ path('article_foot') }}">AJouter un article</a></li>
+                                            <li><a href="{{ path('article_foot_list') }}">Lister les articles</a></li>
+                                        </ul>
+                                    </details>
+                                </li>
                                 <li><a href="">Deconnexion</a></li>
                         {% endif %}
 
