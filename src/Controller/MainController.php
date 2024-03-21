@@ -21,9 +21,10 @@ class MainController extends AbstractController
 {
     #[Route('/', name: 'app_main')]
     public function index(): Response
-    {   $footData = $this->MatchOfDay();
+    {   
+        //api : 5a4e952b5ecf47b5a7e64915226910c8
+        $footData = $this->MatchOfDay();
       $teams = $footData['matches'];
-
 
         return $this->render('main/index.html.twig', [
             'titre' => 'Accueil du foot',
@@ -41,14 +42,15 @@ class MainController extends AbstractController
 
 
         // Get the date of the day
-
-
-        $response =  $client->request('GET',"https://api.football-data.org/v4/competitions/2002/matches",[
+        $now = new \DateTime();
+        $format = $now->format('Y-m-d');
+       
+        $response =  $client->request('GET',"https://api.football-data.org/v4/competitions/2021/matches?status=SCHEDULED",[
             'headers' => $headers,
         ]);
         $data = json_decode($response->getContent(),true);
-
-
+    
+     
 
         return $data;
     }

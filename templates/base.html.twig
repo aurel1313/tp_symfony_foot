@@ -14,7 +14,7 @@
     </head>
     <body>
         {% block body %}
-            <div class="navbar bg-base-100 nav">
+            <div class="navbar bg-base-100 nav ">
                 <div class="navbar-start">
                     <div class="dropdown">
                         <label tabindex="0" class="btn btn-ghost lg:hidden">
@@ -35,8 +35,8 @@
 
                 </div>
                 <div class="navbar-center hidden lg:flex">
-                    <ul class="menu menu-horizontal px-1">
-                        <li><a href="{{ path('app_main') }}">Home</a></li>
+                    <ul class="menu menu-horizontal px-1 text-black">
+                        <li><a href="{{ path('app_main') }}" >Home</a></li>
                         <li tabindex="0">
                             <details>
                                 <summary>Parent</summary>
