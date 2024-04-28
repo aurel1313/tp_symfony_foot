@@ -23,12 +23,21 @@ class MainController extends AbstractController
     public function index(): Response
     {   $footData = $this->MatchOfDay();
       $teams = $footData['matches'];
-
-
+        $currentDate = new DateTime();
+     
+     $date =$currentDate->format('d/m/Y');
+       //retourner les matches qui sont a une date ulterieur a la date actuelle//
+        $matches = array_filter($footData['matches'],function($match) use($currentDate){
+            $matchDate = new DateTime($match['utcDate']);
+          
+            return $matchDate > $currentDate;
+        });
+       
         return $this->render('main/index.html.twig', [
             'titre' => 'Accueil du foot',
-            'matches'=>$footData['matches'],
-            'teams'=>$teams
+            'matches'=>$matches,
+            'teams'=>$teams,
+            'currentDate'=>$date
         ]);
     }
     public function MatchOfDay() : array

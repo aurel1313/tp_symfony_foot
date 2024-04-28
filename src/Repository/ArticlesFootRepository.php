@@ -45,4 +45,9 @@ class ArticlesFootRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function findArticleUser(): array
+    {
+        return $this->createQueryBuilder('af')
+            ->join('user', 'u');
+    }
 }

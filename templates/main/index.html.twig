@@ -8,53 +8,35 @@
 {% block body %}
     {{ parent() }}
 
-{% for messages in app.flashes('success') %}
-    <div class="bg-success">
-        Utilisateur a été inserer
-    </div>
 
-    {% endfor %}
-<div class="border flex flex-col items-center ">
+<div class="border grid  grid-cols-4 gap-4 ">
     <h1 class="text-center "> {{ titre }}! ⚽</h1>
-    <div class="overflow-x-auto">
-        <table class="table">
-            <!-- head -->
-            <thead>
-            <tr>
-                <th>Date</th>
-                <th>Match</th>
-                <th>Lieu</th>
-                <th>Meteo</th>
-            </tr>
-            </thead>
-            <tbody>
-            <!-- row 1 -->
+    
+    {% for list in matches %}
+       
+         <div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl m-5">
+    <div class="p-8 flex">
+        <div class="pr-4">
 
-                {% for match in matches %}
-
-
-                <tr class="bg-base-200">
-
-                    <td>
-
-
-                             {{ match.utcDate|date('d/m/y H:i:s') }}
-
-                    </td>
-
-                    <td>
-
-                            {{ match.homeTeam.name }}-{{ match.awayTeam.name }}
-
-                    </td>
-                    <td></td>
-
-                </tr>
-
-                    {% endfor %}
-
-            </tbody>
-        </table>
+            {% if list.utcDate|date('d/m/Y') <= currentDate %}
+            <p class="text-4xl  font-bold">{{list.utcDate|date('d F Y')}}</p>
+            {% endif %}
+        </div>
+        <div>
+        <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">{{list.homeTeam.name}}-{{list.awayTeam.name}}</div>
+        <p class="mt-2 text-gray-500">Event Description</p>
+        <p class="mt-2 text-gray-500">Event Details...</p>
+        </div>
     </div>
+    </div>
+  
+    {% endfor %}
+      
+     
+    
+   
+
+   
+   
 </div>
 {% endblock %}

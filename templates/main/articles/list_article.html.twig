@@ -1,14 +1,22 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="grid grid-rows-4 ">
+    <div class="grid grid-cols-3 gap-4" >
+        {{ dump(article.getIdUser) }}
     {% for articles in article %}
 
-            <div class="card w-96 bg-green-500 ">
-                <div class="card-body">
+            <div class="card bg-green-500">
+                <figure>
+                    {% if articles.images is null %}
+                        <img src="" />
+                    {% else %}
 
-                    <h1>{{ articles.nom }}</h1>
-                    <p>{{ articles.description }}</p>
+                    {% endif %}
+                </figure>
+                <div class="card-body " >
+
+                    <p class="font-bold">{{ articles.nom }}</p>
+                    <p >{{ articles.description }}</p>
 
                 </div>
             </div>
