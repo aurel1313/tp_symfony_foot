@@ -54,11 +54,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'idUser', targetEntity: ArticlesFoot::class)]
     private Collection $idArticleFoot;
 
+    #[ORM\OneToMany(mappedBy: 'idUser', targetEntity: Avis::class)]
+    private Collection $avis;
+
 
 
     public function __construct()
     {
         $this->idArticleFoot = new ArrayCollection();
+        $this->avis = new ArrayCollection();
 
     }
 
@@ -192,6 +196,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($idArticleFoot->getIdUser() === $this) {
                 $idArticleFoot->setIdUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Avis>
+     */
+    public function getAvis(): Collection
+    {
+        return $this->avis;
+    }
+
+    public function addAvi(Avis $avi): static
+    {
+        if (!$this->avis->contains($avi)) {
+            $this->avis->add($avi);
+            $avi->setIdUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAvi(Avis $avi): static
+    {
+        if ($this->avis->removeElement($avi)) {
+            // set the owning side to null (unless already changed)
+            if ($avi->getIdUser() === $this) {
+                $avi->setIdUser(null);
             }
         }
 

@@ -7,36 +7,71 @@
 
 {% block body %}
     {{ parent() }}
+   
 
-
-<div class="border grid  grid-cols-4 gap-4 ">
-    <h1 class="text-center "> {{ titre }}! ⚽</h1>
-    
-    {% for list in matches %}
-       
-         <div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl m-5">
-    <div class="p-8 flex">
-        <div class="pr-4">
-
-            {% if list.utcDate|date('d/m/Y') <= currentDate %}
-            <p class="text-4xl  font-bold">{{list.utcDate|date('d F Y')}}</p>
-            {% endif %}
-        </div>
-        <div>
-        <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">{{list.homeTeam.name}}-{{list.awayTeam.name}}</div>
-        <p class="mt-2 text-gray-500">Event Description</p>
-        <p class="mt-2 text-gray-500">Event Details...</p>
-        </div>
-    </div>
-    </div>
+   {% for match in matches %}
   
+        {% for matchStats in match%}
+            {% for stat in matchStats %}
+                <div class="card bg-base-100 image-full w-96 shadow-xl">
+           
+             
+               {% for team in stat.teams %}
+                     <figure>
+                          
+                        //trouver le logo sur le web a l'aide du nom de l'equipe
+                        {% set team1 = team.team1|replace({' ': ''}) %}
+                        {% set team2 = team.team2|replace({' ': ''}) %}
+                
+                 
+                        <img src="data:image/jpeg;base64,{{team1}}.png" alt="team1" />
+                    
+
+                 
+                 
+
+                        
+                  
+
+                       
+                      
+
+                    </figure>
+                    <div class="flex flex-row" >
+                        
+                       
+                        <p>{{team.team1}}</p>
+                        <p>{{team.team2}}</p>
+
+                        <!-- afficher le score -->
+                        {% if stat.score %}
+                          {% for scores in stat.score %}
+                      
+                           
+                           {% set part1 = scores.score|slice(0, scores.score|length // 2) %}
+{% set part2 = scores.score|slice(scores.score|length // 2) %}
+{% set modified_string = part1 ~ '-' ~ part2 %}
+                            <p>{{modified_string}}</p>
+
+                          {% endfor %}
+                        {% endif %}
+
+                    
+                     
+
+                      
+                       
+                    </div>
+               {% endfor %}
+               </div>
+          
+            {% endfor %}
+        {% endfor %}
     {% endfor %}
-      
-     
-    
-   
+
+
 
    
    
-</div>
+
 {% endblock %}

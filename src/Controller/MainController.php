@@ -8,7 +8,7 @@ use App\Repository\ArticlesFootRepository;
 use App\Services\FileUploader;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use GuzzleHttp\Client;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,84 +16,141 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Serializer;
-
+use App\Form\MatchesStatusType;
+use Goutte\Client;
 class MainController extends AbstractController
 {
+  
     #[Route('/', name: 'app_main')]
     public function index(): Response
     {   
-        //api : 5a4e952b5ecf47b5a7e64915226910c8
-        $footData = $this->MatchOfDay();
-      $teams = $footData['matches'];
-        $currentDate = new DateTime();
-     
-     $date =$currentDate->format('d/m/Y');
-       //retourner les matches qui sont a une date ulterieur a la date actuelle//
-        $matches = array_filter($footData['matches'],function($match) use($currentDate){
-            $matchDate = new DateTime($match['utcDate']);
+       
+       
+        $client = new Client();
+        //get details match in scrapping in footmercato
+        $crawler = $client->request('GET', 'https://www.footmercato.net/live/');
+       
+       
+    //retourner les logos des equipes
+        $matches = $crawler->filter('.matchesGroup__list')->each(function ($node) {
+            //si le mtach est en cours
+         
           
-            return $matchDate > $currentDate;
-        });
+               return [
+                 
+                   'matches' => $node->filter('.matchesGroup__match')->each(function ($node) {
+                      
+                    //dd score de chaque match
+                   
+
+
+                    
+
+                       return [
+                     
+                           'link' => $node->filter('.matchFull__link')->attr('href'),
+                           'teams'=> $node->filter('.matchFull__teams')->each(function ($node) {
+                              
+                               return [
+                                   'team1' => $node->filter('.matchTeam__name')->text(),
+                                   
+                                
+                                   //recuperer 2eme .matchTeam__name
+                                   'team2' => $node->filter('.matchTeam__name')->eq(1)->text(),
+ 
+                                  
+                                
+                                 
+ 
+                               ];
+                               
+                              
+                           }),
+                           'logos'=> $node->filter('.matchFull__teams')->each(function ($node) {
+                              
+                               return [
+                                   'logo1' => $node->filter('.matchTeam__logo')->filter('img')->first()->attr('src'),
+                                   //'score' => $node->filter('.matchFull__score')->text(),
+                                
+                                   //recuperer 2eme .matchTeam__name
+                                   'logo2' => $node->filter('.matchTeam__logo')->eq(1)->attr('src'),
+ 
+                                   //'score1' => $node->filter('.matchFull__score')->eq(0)->text(),
+                                
+                                 
+ 
+                               ];
+                               
+                            
+                           }),
+                            'score'=> $node->filter('.matchFull__score')->each(function ($node) {
+                                    
+                                 return [
+                                      'score' => $node->filter('.matchFull__score')->filter('span')->first()->text(),
+                                      //'score' => $node->filter('.matchFull__score')->text(),
+                                  
+                                   
+     
+                                      //'score1' => $node->filter('.matchFull__score')->eq(0)->text(),
+                                  
+                                    
+     
+                                 ];
+                                 
+     
+                            }),
+                          
+                        
+                       
+                       
+                       
+                           
+                            
+                           
+                     
+                        
+                          
+                           
+                       ];
+                       
+                  
+                      
+                   }),
+ 
+                  
+               ];
+            
+              
+           });
+       
+ 
+       
        
         return $this->render('main/index.html.twig', [
-            'titre' => 'Accueil du foot',
-            'matches'=>$matches,
-            'teams'=>$teams,
-            'currentDate'=>$date
+            'controller_name' => 'MainController',
+            'matches' => $matches,
+            
         ]);
-    }
-    public function MatchOfDay() : array
-    {
-        $token ='5a4e952b5ecf47b5a7e64915226910c8';
-        $headers = [
-            'X-Auth-Token' => $token,
-        ];
-        $client = HttpClient::create();
-
-
-        // Get the date of the day
-        $now = new \DateTime();
-        $format = $now->format('Y-m-d');
        
-        $response =  $client->request('GET',"https://api.football-data.org/v4/competitions/2021/matches?status=SCHEDULED",[
-            'headers' => $headers,
-        ]);
-        $data = json_decode($response->getContent(),true);
-    
-     
+      
+    }
+  
+    public function getScore(){
+        $client = new Client();
+        //get details match in scrapping in footmercato
+        $crawler = $client->request('GET', 'https://www.footmercato.net/live/');
 
-        return $data;
-    }
-    #[Route('/list','article_foot_list')]
-    public function IndexArticle(entityManagerInterface $manager,ArticlesFootRepository $articlesFootRepository):Response{
-       $articles = $articlesFootRepository->findAll();
+        //si .FullScore__score existe
+        $score = $crawler->filter('.matchFull__score')->each(function ($node) {
+            return [
+                'score' => $node->text() 
+            ];
+        });
+        //associer le score a chaque match
 
-        return $this->render('main/articles/list_article.html.twig',[
-            'article'=>$articles
-        ]);
+
     }
-    #[Route('/articles','article_foot')]
-    #[Route('/article/modifier/{id}','modifier_article')]
-    public function CommunityList(entityManagerInterface $entityManager, Request $request,int $idArticle=null,FileUploader $fileUploader): Response{
-        if($idArticle==null){
-            $article = new ArticlesFoot();
-        }else{
-            $entityManager->find($idArticle);
-        }
-        $form =$this->createForm(ArticleFootType::class,$article);
-        $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()){
-            $img =$form->get('images')->getData();
-            if($img){
-                $imgName = $fileUploader->upload($img);
-                $article->setImages($imgName);
-            }
-            $entityManager->persist($article);
-            $entityManager->flush();
-            $this->redirectToRoute('article_foot_index');
-        }
-        return $this->render('main/articles/add_modify_article.html.twig',[
-            'form'=>$form
-        ]);
-    }
+
+   
 }
+

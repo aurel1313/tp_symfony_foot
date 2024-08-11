@@ -20,7 +20,26 @@ class ArticlesFootRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, ArticlesFoot::class);
     }
+    //return all articles//
+    public function findAllArticles(): array
+    {
+        //jointure entre la table articles et la table user//
+        return $this->createQueryBuilder('af')->select('af','u')
+            ->innerJoin('af.idUser', 'u')
+            ->getQuery()
+            ->getResult();
+    
 
+    
+    }
+    //delete by id//
+    public function deleteArticle($id)
+    {
+        $entityManager = $this->getEntityManager();
+        $query = $entityManager->createQuery('DELETE FROM App\Entity\ArticlesFoot af WHERE af.id = :id');
+        $query->setParameter('id', $id);
+        dd($id);
+    }
 //    /**
 //     * @return ArticlesFoot[] Returns an array of ArticlesFoot objects
 //     */

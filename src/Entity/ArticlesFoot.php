@@ -22,10 +22,14 @@ class ArticlesFoot
     #[ORM\Column(length: 255,nullable: true)]
     private ?string $images = null;
 
-    #[ORM\ManyToOne(inversedBy: 'idArticleFoot')]
+    #[ORM\ManyToOne(targetEntity: User::class,inversedBy: 'idArticleFoot')]
+   
+    
     #[ORM\JoinColumn(nullable: false)]
+   
+    
     private ?User $idUser = null;
-
+    private ?User $user = null;
 
 
     public function getId(): ?int
@@ -91,5 +95,9 @@ class ArticlesFoot
         $this->user = $user;
 
         return $this;
+    }
+    public function __toString()
+    {
+        return $this->getNom();
     }
 }

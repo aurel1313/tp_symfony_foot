@@ -1,0 +1,63 @@
+
+ {% extends 'base.html.twig' %} 
+
+{% block title %}Article{% endblock %}
+
+{% block body %}
+<div class="flex justify-center items-center h-screen">
+    <div class=" card card-compact w-96 bg-base-100 shadow-xl  " >
+    <figure>
+       {% if article.images %}
+            {% set images  = article.images %}
+            {% set image  = asset('uploads/images/'~images) %}
+            <img src="{{image}}" alt="{{ article.nom }}" class="w-96 h-96 object-cover">
+            {% endif %}
+    </figure>
+    <div class="card-body">
+    
+    <!-- si on modifie l'article ajouter formulaire de modification -->
+  
+    {% 
+        
+        if app.request.attributes.get('_route') == 'article_edit' %}
+           
+            {{form_start(form)}}
+
+            {{form_row(form.nom, {'attr': {'class': 'input input-bordered'}})}}
+            {{form_row(form.description, {'attr': {'class': 'input input-bordered'}})}}
+         
+            {{form_row(form.images, {'attr': {'class': 'input input-bordered'}})}}
+          
+           
+            {{form_row(form.submit, {'attr': {'class': 'btn btn-primary'}})}}
+            {{form_end(form)}}
+          
+          {% else %}
+
+          {# si on affiche l'article #}
+              <p>{{ article.idUser.email }}</p>
+            <h1>{{ article.nom }}</h1>
+            <p>{{ article.description }}</p>
+            
+            <div class="card-actions justify-end">
+            <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn btn-primary">Editer</a>
+            <a href="{{ path('article_foot_list') }}" class="btn btn-primary">Retour</a>
+            </div>
+            {% endif %}
+
+           
+
+        
+
+
+  
+
+   
+
+    
+     
+    </div>
+    </div>
+    </div>
+    </div>
+{% endblock %} 
